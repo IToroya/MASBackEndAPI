@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 // Dataobject used for persistent storage
@@ -21,12 +22,12 @@ public class Todo {
     private String description;
     private boolean finished;
     private boolean bookmarked;
-    private long dueDate;
+    private ZonedDateTime dueDate;
 
     public Todo() {
     }
 
-    public Todo(long id, String name, String description, boolean finished, boolean bookmarked, long dueDate) {
+    public Todo(long id, String name, String description, boolean finished, boolean bookmarked, ZonedDateTime dueDate) {
         this.id = id;
         this.name = name;
         this.description = description;
