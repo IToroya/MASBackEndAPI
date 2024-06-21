@@ -1,6 +1,7 @@
 package com.example.demo.Payroll.Controller;
 
 import com.example.demo.Payroll.Entities.JournalUser;
+import com.example.demo.Payroll.Entities.JournalUserStatus;
 import com.example.demo.Payroll.ExceptionsAndAdvices.JournalUserAlreadyExistsException;
 import com.example.demo.Payroll.ExceptionsAndAdvices.JournalUserNotFoundException;
 import com.example.demo.Payroll.ExceptionsAndAdvices.TodoNotFoundException;
@@ -25,48 +26,14 @@ public class JournalUserController {
         return repository.findAll();
     }
 
-    /**@PostMapping("/users")
-    public JournalUser newUser(@RequestBody String email, String password) {
-        if (repository.findByEmailAndPassword(email, password).isPresent()) {
-            throw new JournalUserAlreadyExistsException(email);
-        }
-        else {
-            JournalUser user = new JournalUser(email, password);
-            return repository.save(user);
-        }
-    }**/
-
-    @GetMapping("/users/{id}")
-    public JournalUser one(@PathVariable Long id) {
-        return repository.findById(id).orElseThrow(() -> new JournalUserNotFoundException(id));
-    }
-
-    @GetMapping("/users/check")
-    public ResponseEntity<Boolean> checkJournalUser(@RequestParam String email,@RequestParam String password) {
-        boolean userExists = repository.findByEmailAndPassword(email, password).isPresent();
-        if (userExists) {
-            return ResponseEntity.ok(true);
+    @PostMapping("/users/check")
+    public ResponseEntity<JournalUserStatus> checkJournalUser(@RequestBody JournalUser journalUser) {
+        JournalUserStatus userStatus = new JournalUserStatus(repository.findByEmailAndPassword(journalUser.getEmail(), journalUser.getPassword()).isPresent());
+        if (userStatus.isStatus()) {
+            return ResponseEntity.ok(userStatus);
         }
         else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userStatus);
     }
 
-    @PutMapping("/users/{id}")
-    public JournalUser replaceUser(@PathVariable Long id, @RequestBody JournalUser newJournalUser) {
-        return repository.findById(id)
-                .map(journalUser -> {
-                    journalUser.setEmail(newJournalUser.getEmail());
-                    journalUser.setPassword(newJournalUser.getPassword());
-                    return repository.save(journalUser);
-                })
-                .orElseGet(() -> {
-                    newJournalUser.setId(id);
-                    return repository.save(newJournalUser);
-                });
-    }
-
-    @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        repository.deleteById(id);
-    }
 }
