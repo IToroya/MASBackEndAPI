@@ -1,6 +1,7 @@
 package com.example.demo.Payroll.Entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,15 +16,14 @@ import java.util.Objects;
 @Entity
 public class JournalUser {
 
-    private @Id Long id;
+    private @Id @GeneratedValue Long id;
     private String email;
     private String password;
 
     public JournalUser(){
     }
 
-    public JournalUser(long id, String email, String password) {
-        this.id = id;
+    public JournalUser(String email, String password) {
         this.email = email;
         this.password = password;
     }

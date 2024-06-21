@@ -5,6 +5,8 @@ import com.example.demo.Payroll.ExceptionsAndAdvices.JournalUserAlreadyExistsExc
 import com.example.demo.Payroll.ExceptionsAndAdvices.JournalUserNotFoundException;
 import com.example.demo.Payroll.ExceptionsAndAdvices.TodoNotFoundException;
 import com.example.demo.Payroll.Repositories.JournalUserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,18 +25,30 @@ public class JournalUserController {
         return repository.findAll();
     }
 
-    @PostMapping("/users")
-    public JournalUser newUser(@RequestBody JournalUser journalUser) {
-        if (repository.existsById(journalUser.getId())) {
-            throw new JournalUserAlreadyExistsException(journalUser.getId());
+    /**@PostMapping("/users")
+    public JournalUser newUser(@RequestBody String email, String password) {
+        if (repository.findByEmailAndPassword(email, password).isPresent()) {
+            throw new JournalUserAlreadyExistsException(email);
         }
-        else
-            return repository.save(journalUser);
-    }
+        else {
+            JournalUser user = new JournalUser(email, password);
+            return repository.save(user);
+        }
+    }**/
 
     @GetMapping("/users/{id}")
     public JournalUser one(@PathVariable Long id) {
         return repository.findById(id).orElseThrow(() -> new JournalUserNotFoundException(id));
+    }
+
+    @GetMapping("/users/check")
+    public ResponseEntity<Boolean> checkJournalUser(@RequestParam String email,@RequestParam String password) {
+        boolean userExists = repository.findByEmailAndPassword(email, password).isPresent();
+        if (userExists) {
+            return ResponseEntity.ok(true);
+        }
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
     }
 
     @PutMapping("/users/{id}")

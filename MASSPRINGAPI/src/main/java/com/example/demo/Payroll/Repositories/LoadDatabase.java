@@ -25,8 +25,8 @@ class LoadDatabase {
         return args -> {
             log.info("Preloading " + repository.save(new Todo(1, "Todo 1", "Eat vegetables", false, false, dueDateDefault)));
             log.info("Preloading " + repository.save(new Todo(2, "Todo 2", "Eat even more vegetables", false, false, dueDateDefault)));
-            log.info("Preloading " + journalUserRepository.save(new JournalUser(1, "vincent.berndt@gmail.com", "1928319")));
-            log.info("Preloading " + journalUserRepository.save(new JournalUser(2, "nico.rueckner@gmail.com", "128372349")));
+            log.info("Preloading " + journalUserRepository.save(new JournalUser("vincent.berndt@gmail.com", "1928319")));
+            log.info("Preloading " + journalUserRepository.save(new JournalUser("nico.rueckner@gmail.com", "128372349")));
         };
     }
 }
